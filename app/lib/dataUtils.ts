@@ -46,7 +46,7 @@ export function analyzeColumns(data: Record<string, string>[]): ColumnMeta[] {
       type: detectColType(values.slice(0, 50)),
       uniqueCount: unique.size,
       missingCount: values.length - nonEmpty.length,
-      sample: [...unique].slice(0, 5),
+      sample: Array.from(unique).slice(0, 5),
     }
   })
 }
