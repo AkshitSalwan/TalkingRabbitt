@@ -38,7 +38,8 @@ const getModel = () => {
 
 /** Shared: clean and parse JSON from Gemini response */
 const parseJSON = <T>(text: string): T => {
-  let cleaned = text.trim()
+  const cleaned = text
+    .trim()
     .replace(/^```json\s*/i, '')
     .replace(/^```\s*/i, '')
     .replace(/\s*```$/i, '')
@@ -52,7 +53,7 @@ const parseJSON = <T>(text: string): T => {
   }
 }
 
-/** Shared: classify errors */
+/** Shared: classify and re-throw errors — return type is never so TS knows it always throws */
 const classifyError = (error: unknown): never => {
   const message = error instanceof Error ? error.message : String(error)
   if (message.includes('API key') || message.includes('authentication') || message.includes('API_KEY_INVALID'))
@@ -110,7 +111,7 @@ Rules:
     parsed.values = parsed.values ?? []
     return parsed
   } catch (err) {
-    classifyError(err)
+    return classifyError(err)
   }
 }
 
@@ -156,7 +157,7 @@ Rules:
     if (!result.response?.text()) throw new Error('No response from Gemini API')
     return parseJSON<AutoSummary>(result.response.text())
   } catch (err) {
-    classifyError(err)
+    return classifyError(err)
   }
 }
 
@@ -197,6 +198,6 @@ Rules:
     if (!result.response?.text()) throw new Error('No response from Gemini API')
     return parseJSON<ForecastResponse>(result.response.text())
   } catch (err) {
-    classifyError(err)
+    return classifyError(err)
   }
 }
